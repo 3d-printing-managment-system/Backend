@@ -80,5 +80,5 @@ export const deleteManyCommandLogsService = async (ids: string[]) => {
     },
   });
 
-  return result; 
+  return result;
 };
