@@ -1,5 +1,6 @@
 import { prisma } from "../../lib/prisma";
 import { Prisma } from "@prisma/client";
+import { publishPrinterCommand } from "./mqtt.service";
 
 export const createGcodeCommand = (data: Prisma.GcodeCommandCreateInput) => {
   return prisma.gcodeCommand.create({ data });
@@ -7,14 +8,14 @@ export const createGcodeCommand = (data: Prisma.GcodeCommandCreateInput) => {
 
 export const getGcodeCommands = () => {
   return prisma.gcodeCommand.findMany({
-    include: { commandLog: true },
+    include: { commandLogs: true },
   });
 };
 
 export const getGcodeCommandById = (id: string) => {
   return prisma.gcodeCommand.findUnique({
     where: { id },
-    include: { commandLog: true },
+    include: { commandLogs: true },
   });
 };
 
@@ -25,7 +26,7 @@ export const updateGcodeCommand = async (id: string, data: Prisma.GcodeCommandUp
   return prisma.gcodeCommand.update({
     where: { id },
     data,
-    include: { commandLog: true },
+    include: { commandLogs: true },
   });
 };
 
@@ -50,4 +51,44 @@ export const deleteManyGcodeCommandsService = async (ids: string[]) => {
   });
 
   return result;
+};
+
+
+export const sendGcodeCommandToPrinter = async ({
+  printerId,
+  gcodeCommandId,
+}: {
+  printerId: string;
+  gcodeCommandId: string;
+}) => {
+  // 1. get command from DB
+  const command = await prisma.gcodeCommand.findUnique({
+    where: { id: gcodeCommandId },
+  });
+
+  if (!command) {
+    throw new Error("Gcode command not found");
+  }
+
+  // 2. send via MQTT
+  publishPrinterCommand({
+    printerId,
+    commandName: command.name,
+    gcode: command.command,
+  });
+
+  // 3. log it
+  await prisma.commandLog.create({
+    data: {
+      printerId,
+      commandId: command.id,
+      rawCommand: command.command,
+      status: "SENT",
+    },
+  });
+
+  return {
+    success: true,
+    message: "Gcode sent to printer",
+  };
 };

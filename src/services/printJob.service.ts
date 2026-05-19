@@ -97,7 +97,7 @@ export const getPrintJobs = () => {
     include: {
       printer: true,
       part: true,
-      profile: true,
+      FilamentProfile: true,
     },
   });
 };

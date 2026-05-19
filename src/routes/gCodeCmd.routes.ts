@@ -4,11 +4,13 @@ import * as ctrl from "../controllers/gCodeCmd.controller";
 const router = Router();
 
 router.post("/", ctrl.createGcodeCommand);
+router.post("/:id/send", ctrl.sendGcodeCommandToPrinter);
 router.get("/", ctrl.getGcodeCommands);
 router.delete("/", ctrl.deleteManyGcodeCommands);
 router.get("/:id", ctrl.getGcodeCommandById);
-router.put("/:id", ctrl.updateGcodeCommand);
+router.put("/:id", ctrl.updateGcodeCommand);    
 router.delete("/:id", ctrl.deleteGcodeCommand);
+
 /**
  * @swagger
  * tags:
@@ -124,5 +126,35 @@ router.delete("/:id", ctrl.deleteGcodeCommand);
  *     responses:
  *       200:
  *         description: Command deleted
+ * 
+ * 
+ * 
+* /api/gcode-commands/{id}/send:
+ *   post:
+ *     summary: Send a gcode command to printer
+ *     tags: [Gcode Commands]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - printerId
+ *             properties:
+ *               printerId:
+ *                 type: string
+ *                 example: "printer-uuid-1234"
+ *     responses:
+ *       200:
+ *         description: Command sent to printer
  */
+
+
 export default router;

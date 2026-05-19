@@ -9,6 +9,8 @@ import commandLogRouter from "./src/routes/cmdLogs.routes";
 import maintenanceLogRouter from "./src/routes/maintenanceLog.routes";
 import filamentProfileRoutes from "./src/routes/filamentProfile.routes";
 import inventoryRouter from "./src/routes/inventory.routes";
+import  printerEventRouter  from "./src/routes/printerEvent.routes";
+import queueRoutes from "./src/routes/queue.routes";
 const app = express();
 
 app.use(cors());
@@ -23,4 +25,7 @@ app.use("/api/command-logs", commandLogRouter);
 app.use("/api/maintenance-logs", maintenanceLogRouter);
 app.use("/api/filament-profiles", filamentProfileRoutes);
 app.use("/api/inventory", inventoryRouter);
+app.use("/api/printer-events", printerEventRouter);
+app.use("/api/queue", queueRoutes);
+
 export default app;

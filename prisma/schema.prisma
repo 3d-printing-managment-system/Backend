@@ -23,6 +23,7 @@ model Printer {
   maintenanceLogs MaintenanceLog[]
   jobs            PrintJob[]
   tags            PrinterTag[]
+  printerEvents   PrinterEvent[]
 }
 
 model Tag {
@@ -84,9 +85,11 @@ model PrintJob {
   profileId            String?
   queuePosition        Int
   requiredTagIds       String[]
-  part                 Part                 @relation(fields: [fileId], references: [id])
-  printer              Printer?             @relation(fields: [printerId], references: [id])
-  FilamentProfile      FilamentProfile?     @relation(fields: [profileId], references: [id])
+  retryCount           Int                  @default(0)
+
+  part            Part             @relation(fields: [fileId], references: [id])
+  printer         Printer?         @relation(fields: [printerId], references: [id])
+  FilamentProfile FilamentProfile? @relation(fields: [profileId], references: [id])
 }
 
 model Part {
@@ -122,8 +125,20 @@ model Inventory {
   profile     FilamentProfile @relation(fields: [profileId], references: [id])
 }
 
+model PrinterEvent {
+  id        String   @id @default(uuid())
+  printerId String
+  jobId     String?
+  type      String
+  payload   Json
+  createdAt DateTime @default(now())
+
+  printer Printer? @relation(fields: [printerId], references: [id])
+}
+
 enum PrinterStatus {
   IDLE
+  RESERVED // NEW (important for scheduling)
   PRINTING
   PAUSED
   OFFLINE
@@ -137,6 +152,7 @@ enum CommandStatus {
 
 enum JobStatus {
   QUEUED
+  DISPATCHED // sent to Pi but not started yet
   PRINTING
   PAUSED
   DONE

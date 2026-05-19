@@ -12,7 +12,7 @@ export const getPrinters = () => {
       jobs: {
         include: {
           part: true,
-          profile: true,
+          FilamentProfile: true,
         },
       },
     },
