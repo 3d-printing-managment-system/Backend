@@ -4,20 +4,20 @@ import { Prisma } from "@prisma/client";
 export const createFilamentProfile = (data: Prisma.FilamentProfileCreateInput) => {
   return prisma.filamentProfile.create({
     data,
-    include: { inventory: true, jobs: true },
+    include: { inventory: true, PrintJob: true },
   });
 };
 
 export const getFilamentProfiles = () => {
   return prisma.filamentProfile.findMany({
-    include: { inventory: true, jobs: true },
+    include: { inventory: true, PrintJob: true },
   });
 };
 
 export const getFilamentProfileById = (id: string) => {
   return prisma.filamentProfile.findUnique({
     where: { id },
-    include: { inventory: true, jobs: true },
+    include: { inventory: true, PrintJob: true },
   });
 };
 
@@ -28,7 +28,7 @@ export const updateFilamentProfile = async (id: string, data: Prisma.FilamentPro
   return prisma.filamentProfile.update({
     where: { id },
     data,
-    include: { inventory: true, jobs: true },
+    include: { inventory: true, PrintJob: true },
   });
 };
 

@@ -56,7 +56,7 @@ export const publishPrinterCommand = ({
   commandName: string;
   gcode: string;
 }) => {
-  const topic = `printers/${printerId}/commands`;
+  const topic = `printers/${printerId}/command`;
 
   const payload = {
     printerId,

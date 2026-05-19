@@ -75,14 +75,16 @@ export const deleteManyGcodeCommands: RequestHandler = async (req, res) => {
   }
 };
 
+
 export const sendGcodeCommandToPrinter: RequestHandler = async (req, res) => {
   try {
-    const { printerId, gcodeCommandId } = req.body;     
+    const printerId = req.params.id as string;
+    const { gcodeCommandId } = req.body; // only this from body
     await service.sendGcodeCommandToPrinter({ printerId, gcodeCommandId });
     res.json({ message: "Gcode command sent to printer" });
-  } catch (error) {   
+  } catch (error) {
     handleError(res, error);
-  } 
+  }
 };
 
 
