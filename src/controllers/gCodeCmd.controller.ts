@@ -76,15 +76,49 @@ export const deleteManyGcodeCommands: RequestHandler = async (req, res) => {
 };
 
 
-export const sendGcodeCommandToPrinter: RequestHandler = async (req, res) => {
-  try {
-    const printerId = req.params.id as string;
-    const { gcodeCommandId } = req.body; // only this from body
-    await service.sendGcodeCommandToPrinter({ printerId, gcodeCommandId });
-    res.json({ message: "Gcode command sent to printer" });
-  } catch (error) {
-    handleError(res, error);
-  }
-};
+export const sendSavedCommandToPrinter: RequestHandler<IdParam> =
+  async (req, res) => {
+    try {
+      const printerId = req.query.printerId as string;
 
+      if (!printerId) {
+        return res.status(400).json({
+          error: "printerId query parameter is required",
+        });
+      }
 
+      const result =
+        await service.sendSavedCommandToPrinter({
+          printerId,
+          gcodeCommandId: req.params.id,
+        });
+
+      res.json(result);
+    } catch (error) {
+      handleError(res, error);
+    }
+  };
+
+  export const sendRawCommandToPrinter: RequestHandler =
+  async (req, res) => {
+    try {
+      const { printerId, gcode } = req.body;
+
+      if (!printerId || !gcode) {
+        return res.status(400).json({
+          error: "printerId and gcode are required",
+        });
+      }
+
+      const result =
+        await service.sendRawCommandToPrinter({
+          printerId,
+          gcode,
+        });
+
+      res.json(result);
+    } catch (error) {
+      handleError(res, error);
+    }
+  };
+  

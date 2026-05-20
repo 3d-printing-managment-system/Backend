@@ -54,14 +54,13 @@ export const deleteManyGcodeCommandsService = async (ids: string[]) => {
 };
 
 
-export const sendGcodeCommandToPrinter = async ({
+export const sendSavedCommandToPrinter = async ({
   printerId,
   gcodeCommandId,
 }: {
   printerId: string;
   gcodeCommandId: string;
 }) => {
-  // 1. get command from DB
   const command = await prisma.gcodeCommand.findUnique({
     where: { id: gcodeCommandId },
   });
@@ -70,14 +69,12 @@ export const sendGcodeCommandToPrinter = async ({
     throw new Error("Gcode command not found");
   }
 
-  // 2. send via MQTT
   publishPrinterCommand({
     printerId,
     commandName: command.name,
     gcode: command.command,
   });
 
-  // 3. log it
   await prisma.commandLog.create({
     data: {
       printerId,
@@ -89,6 +86,32 @@ export const sendGcodeCommandToPrinter = async ({
 
   return {
     success: true,
-    message: "Gcode sent to printer",
+  };
+};
+
+export const sendRawCommandToPrinter = async ({
+  printerId,
+  gcode,
+}: {
+  printerId: string;
+  gcode: string;
+}) => {
+
+  publishPrinterCommand({
+    printerId,
+    commandName: "MANUAL_COMMAND",
+    gcode,
+  });
+
+  await prisma.commandLog.create({
+    data: {
+      printerId,
+      rawCommand: gcode,
+      status: "SENT",
+    },
+  });
+
+  return {
+    success: true,
   };
 };
