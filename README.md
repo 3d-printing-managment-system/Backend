@@ -179,10 +179,3 @@ The code imports `src/services/mqtt.listener` from `server.ts` so the MQTT clien
 - [package.json](package.json) — scripts and commands you will run
 
 ---
-
-If you'd like, I can:
-- Open a more detailed endpoint-by-endpoint reference using the router files.
-- Add examples for common cURL requests and Postman collections.
-- Create a `README` section for deployment with Docker and GitHub Actions.
-
-README created and placed in the repository root.
