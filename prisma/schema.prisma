@@ -89,7 +89,7 @@ model PrintJob {
 
   part            Part             @relation(fields: [fileId], references: [id])
   printer         Printer?         @relation(fields: [printerId], references: [id])
-  FilamentProfile FilamentProfile? @relation(fields: [profileId], references: [id])
+  profile FilamentProfile? @relation(fields: [profileId], references: [id])
 }
 
 model Part {
@@ -111,7 +111,7 @@ model FilamentProfile {
   color     String
   roleSize  Float
   inventory Inventory[]
-  PrintJob  PrintJob[]
+  printJob  PrintJob[]
 }
 
 model Inventory {

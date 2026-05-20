@@ -1,13 +1,11 @@
 import mqtt from "mqtt";
 
-
 const client = mqtt.connect(process.env.MQTT_BROKER_URL!, {
   username: process.env.MQTT_USERNAME,
   password: process.env.MQTT_PASSWORD,
   keepalive: 60,
   clean: false,
   clientId: `backend-listener-${Math.random().toString(16).substring(2, 8)}`,
-
 });
 
 client.on("connect", () => {
@@ -18,7 +16,7 @@ client.on("error", (err) => {
   console.error("❌ MQTT error:", err);
 });
 
-//start job 
+//start job
 
 export const publishStartJob = ({
   printerId,
@@ -45,7 +43,7 @@ export const publishStartJob = ({
   console.log("📤 START_JOB SENT:", payload);
 };
 
-//printer commands 
+//printer commands
 
 export const publishPrinterCommand = ({
   printerId,

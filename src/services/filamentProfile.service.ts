@@ -1,34 +1,39 @@
 import { prisma } from "../../lib/prisma";
 import { Prisma } from "@prisma/client";
 
-export const createFilamentProfile = (data: Prisma.FilamentProfileCreateInput) => {
+export const createFilamentProfile = (
+  data: Prisma.FilamentProfileCreateInput,
+) => {
   return prisma.filamentProfile.create({
     data,
-    include: { inventory: true, PrintJob: true },
+    include: { inventory: true, printJob: true },
   });
 };
 
 export const getFilamentProfiles = () => {
   return prisma.filamentProfile.findMany({
-    include: { inventory: true, PrintJob: true },
+    include: { inventory: true, printJob: true },
   });
 };
 
 export const getFilamentProfileById = (id: string) => {
   return prisma.filamentProfile.findUnique({
     where: { id },
-    include: { inventory: true, PrintJob: true },
+    include: { inventory: true, printJob: true },
   });
 };
 
-export const updateFilamentProfile = async (id: string, data: Prisma.FilamentProfileUpdateInput) => {
+export const updateFilamentProfile = async (
+  id: string,
+  data: Prisma.FilamentProfileUpdateInput,
+) => {
   const profile = await prisma.filamentProfile.findUnique({ where: { id } });
   if (!profile) throw new Error("Filament profile not found");
 
   return prisma.filamentProfile.update({
     where: { id },
     data,
-    include: { inventory: true, PrintJob: true },
+    include: { inventory: true, printJob: true },
   });
 };
 
